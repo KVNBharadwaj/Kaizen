@@ -1,0 +1,87 @@
+This command will generate public and private keys on the server locally without prompting for user input: 
+ssh-keygen -t rsa -b 4096 -C "website.com" -N 'passphrase' -f ~/.ssh/id_rsa <<< y
+ssh-keygen -t rsa -b 4096 -C "whatever.com" -N '' -f ~/.ssh/id_rsa <<< y
+ssh-keygen -t rsa -b 4096 -C "ansible-Nov-2020" -N '' -f ~/.ssh/id_rsa <<< y
+ 
+-t Specifies the type of key to generate, this can be DSA or RSA
+-b Specifies the type of bit encryption to use, I recommend using 4096 as the minimum.
+-C This option allows us to add a comment to accompany out a public key for easy identification.
+-N Specifies the passphrase to encrypt the keys with.
+-f Specifies the directory or path the keys will be stored.
+
+Below command will append (-i) the authorized_keys file on the target host with new keys:
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@targethost
+
+Below commands will replace the authorized keys based on comment.
+ssh user@targetHost "sed -i.bak '/REGEX_MATCH/d' ~/.ssh/authorized_keys"
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@targethost
+
+
+The command will run and add the remote SSH fingerprint to the local machine, without your input:
+ssh-keyscan -H 192.168.0.107 >> ~/.ssh/known_hosts
+
+
+Sources: 
+https://computingforgeeks.com/generate-openssl-self-signed-certificates-with-ansible/
+https://medium.com/rackbrains/automate-ssh-key-rotation-with-ansible-part-2-7c6f599dd086
+https://medium.com/rackbrains/automate-ssh-key-rotation-with-ansible-part-1-a99934d2dfc9
+
+
+==================================================
+cd /etc/ansible/
+ll
+cd
+cd .ssh
+ll
+cat id_rsa.pub
+ssh-keygen -t rsa -b 4096 -c "ansible-Nov-2020" -N '' -f ~/.ssh/id_rsa <<< y
+history|grep keygen
+ssh-keygen -t rsa -c "ansible-Nov-2020" -N '' -f ~/.ssh/id_rsa <<< y
+ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y
+ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa <<< y
+cat *.pub
+ssh-keygen -t rsa -b 4096 -C "ansible-Nov-2020" -N '' -f ~/.ssh/id_rsa <<< y
+cat *.pub
+ssh ademma@192.168.0.107 "sed -i.bak '/titti/d' ~/.ssh/authorized_keys"
+ssh-copy-id -i ~/.ssh/id_rsa.pub ademma@192.168.0.107
+ssh ademma@192.168.0.107 "sed -i.bak '/Nov-2020/d' ~/.ssh/authorized_keys"
+ssh-keygen -t rsa -b 4096 -C "ansible-Dec-2020" -N '' -f ~/.ssh/id_rsa <<< y
+ssh-copy-id -i ~/.ssh/id_rsa.pub ademma@192.168.0.107
+ssh-keygen -t rsa -b 4096 -C "ansible-Jan-2021" -N '' -f ~/.ssh/id_rsa <<< y
+ssh 'ademma@192.168.0.107'
+ssh ademma@192.168.0.107 "sed -i.bak '/Dec-2020/d' ~/.ssh/authorized_keys"
+ssh-copy-id -i ~/.ssh/id_rsa.pub ademma@192.168.0.107
+ssh ademma@192.168.0.107
+ssh-keygen -t rsa -b 4096 -C "ansible-Feb-2021" -N '' -f /tmp/id_rsa <<< y
+ssh ademma@192.168.0.107
+cat /tmp/id_rsa.pub
+pwd
+cat id_rsa.pub
+ssh-copy-id -i /tmp/id_rsa.pub ademma@192.168.0.107
+ssh ademma@192.168.0.107
+ssh ademma@192.168.0.107 "sed -i.bak '/Jan-2021/d' ~/.ssh/authorized_keys"
+ssh ademma@192.168.0.107
+cp /tmp/id_rsa .
+cp /tmp/id_rsa.pub .
+ssh ademma@192.168.0.107
+history 100
+
+:::First Time Keys:::
+This command will generate the keys locally on ansible tower node:
+ssh-keygen -t rsa -b 4096 -C "ansible-Jan-2021" -N '' -f ~/.ssh/id_rsa <<< y
+
+This command will delete the old keys from the authorized_keys file on target for ansible alone:
+ssh ademma@192.168.0.107 "sed -i.bak '/Dec-2020/d' ~/.ssh/authorized_keys"
+
+This command will copy the new keys from ansible tower node to target host authorized_keys:
+ssh-copy-id -i ~/.ssh/id_rsa.pub ademma@192.168.0.107
+
+:::Rolling keys:::
+
+This command generates keys for next iteration under tmp therefore we can still connect to target:
+ssh-keygen -t rsa -b 4096 -C "ansible-Feb-2021" -N '' -f /tmp/id_rsa <<< y
+Below command will append new keys to target host authorized_keys:
+ssh-copy-id -i /tmp/id_rsa.pub ademma@192.168.0.107
+Based on comment we can delete only the keys we wish to from authorized_keys on target:
+ssh ademma@192.168.0.107 "sed -i.bak '/Jan-2021/d' ~/.ssh/authorized_keys"
+passwordless ssh connectivity still works.
